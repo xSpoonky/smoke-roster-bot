@@ -3,22 +3,23 @@ import discord
 from discord.ext import commands
 
 TOKEN = os.getenv("TOKEN")
+
 GUILD_ID = 1477447173120458782
 CHANNEL_ID = 1497068548722266122
 
 MAX_LEDEN = 25
 
-ROLES = [
-    "👑 Boss",
-    "🧠 Underboss",
-    "⚡ Righthand (Lead)",
-    "🔥 Core",
-    "⚙️ Operator",
-    "🪖 Soldier",
-    "🤝 Associate",
-    "🔰 Prospect",
-    "🏠 Hangaround"
-]
+ROLE_DISPLAY = {
+    "Boss": "👑 Boss",
+    "Underboss": "🧠 Underboss",
+    "Right Hand": "⚡ Righthand (Lead)",
+    "Core": "🔥 Core",
+    "Operator": "⚙️ Operator",
+    "Soldier": "🪖 Soldier",
+    "Associate": "🤝 Associate",
+    "Prospect": "🔰 Prospect",
+    "Hangaround": "🏠 Hangaround"
+}
 
 intents = discord.Intents.default()
 intents.members = True
@@ -34,17 +35,17 @@ async def maak_ledenlijst():
 
     totaal = 0
 
-    for role_name in ROLES:
+    for role_name in ROLE_DISPLAY.keys():
         role = discord.utils.get(guild.roles, name=role_name)
         if role:
             totaal += len(role.members)
 
     tekst = f"🔥 **SMOKE | LEDENLIJST {totaal}/{MAX_LEDEN}** 🔥\n\n"
 
-    for role_name in ROLES:
+    for role_name, display_name in ROLE_DISPLAY.items():
         role = discord.utils.get(guild.roles, name=role_name)
 
-        tekst += f"**{role_name}**\n\n"
+        tekst += f"**{display_name}**\n\n"
 
         if role and len(role.members) > 0:
             leden = sorted(role.members, key=lambda lid: lid.display_name.lower())
@@ -64,6 +65,7 @@ async def update_lijst():
     channel = bot.get_channel(CHANNEL_ID)
 
     if guild is None or channel is None:
+        print("Server of kanaal niet gevonden.")
         return
 
     tekst = await maak_ledenlijst()
@@ -106,6 +108,11 @@ async def on_member_remove(member):
 async def refresh(ctx):
     await update_lijst()
     await ctx.send("✅ Ledenlijst bijgewerkt.", delete_after=5)
+
+
+@bot.command()
+async def ping(ctx):
+    await ctx.send("Pong!")
 
 
 bot.run(TOKEN)
