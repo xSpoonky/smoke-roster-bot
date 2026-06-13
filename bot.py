@@ -10,7 +10,7 @@ CHANNEL_ID = 1497068548722266122
 MAX_LEDEN = 25
 
 ROLE_DISPLAY = {
-    "Boss": "👑 Boss",
+    "Boss 👑": "👑 Boss",
     "Underboss": "🧠 Underboss",
     "Right Hand": "⚡ Righthand (Lead)",
     "Core": "🔥 Core",
